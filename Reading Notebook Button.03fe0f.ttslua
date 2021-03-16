@@ -1,0 +1,51 @@
+
+local ptcgCardBack = 'https://i.imgur.com/NCSTdA9.jpg'
+local torkoalCard = 'https://i.imgur.com/CdLqEUt.png'
+local fireEnergyCard = 'https://i.imgur.com/TpG4pF4.png'
+local giantHearth = 'https://i.imgur.com/sHSHBy8.png'
+local deckImages = {torkoalCard, fireEnergyCard, giantHearth}
+local deckNames = {"Torkoal", "Fire Energy", "Giant Hearth"}
+local deckCount = 3
+
+
+
+
+function spawnCard()
+    for i=1,3 do
+        spawnObject({
+            type = "Card",
+            sound = false,
+            rotation = {0,0,180},
+            position = {0,0,0},
+            callback_function = (function(obj)
+                obj.setName(deckNames[i])
+                obj.setCustomObject({
+                    face = deckImages[i],
+                    back = ptcgCardBack,
+                })
+                --onFullySpawned(obj)
+        end)
+        })
+    end
+    tabs = getNotebookTabs()
+    deckList = tabs[1].body --takes in the full deck list to be broken down into specific cards and amounts
+    while (firstLineLength!=nil) do
+        firstLineLength = string.find(deckList, '%)')
+        pkmnCard = string.sub(deckList, 1, firstLineLength) --reading in the first line from the full decklist
+        cardLength = string.len(pkmnCard)
+        amountOfCard = string.match(pkmnCard, '%d.-x')
+        pkmnCard = string.sub(pkmnCard, string.len(amountOfCard)+2) --removing the numX and space from the front of the card name
+        amountOfCard = string.sub(amountOfCard, 1, string.find(amountOfCard, 'x')-1)
+        setAndNum = string.match(deckList, '%(.-%)') --pulls out the set abbreviation and the card number from that set list
+        deckList = string.sub(deckList, cardLength+2, string.len(deckList)) --removing the read pokemon card from the decklist
+        setAbbr = string.match(setAndNum, '%(.-%s')
+        setAbbr = string.gsub(setAbbr, '%(', "")
+        setNum = string.match(setAndNum, '%d.-%)') --pulls the set number of the card out
+        setNum = string.gsub(setNum, "%)", "") --removes the ')' from the set number
+        pkmnCard = string.sub(pkmnCard, 1, string.find(pkmnCard, '%(')-1) --removing the parenthesis and set info leaving just the pokemon card name
+        printToAll(amountOfCard)
+        printToAll(pkmnCard)
+        printToAll(setAbbr)
+        printToAll(setNum)
+    end
+end
